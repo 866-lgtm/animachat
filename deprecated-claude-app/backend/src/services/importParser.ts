@@ -549,19 +549,36 @@ export class ImportParser {
     const parsed = JSON.parse(content);
 
 // ChatGPT exports: either a single object or an array of conversations
+if (Array.isArray(parsed)) {
+    // Count how many elements actually look like ChatGPT conversations
+    const chatgptConversations = parsed.filter((c: any) =>
+        c &&
+        typeof c === 'object' &&
+        'mapping' in c &&
+        'title' in c
+    );
+
+    if (chatgptConversations.length > 1) {
+        // Refuse multi-conversation exports explicitly instead of silently dropping
+        throw new Error(
+            `ChatGPT export contains ${chatgptConversations.length} conversations; ` +
+            `this importer currently supports importing one conversation per file.`
+        );
+    }
+}
+
 const data = Array.isArray(parsed)
-  ? parsed.find(
-      (c: any) =>
+    ? parsed.find((c: any) =>
         c &&
         typeof c === 'object' &&
         'mapping' in c &&
         'title' in c
     ) ?? parsed[0]
-  : parsed;
+    : parsed;
 
 // If we still don't have a usable object, fall back to the basic JSON parser
 if (!data || typeof data !== 'object') {
-  return this.parseBasicJson(content);
+    return this.parseBasicJson(content);
 }
     
     // Handle ChatGPT export format
