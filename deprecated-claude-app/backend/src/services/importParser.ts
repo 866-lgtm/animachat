@@ -546,7 +546,23 @@ export class ImportParser {
   }
 
   private async parseOpenAI(content: string): Promise<{ messages: ParsedMessage[], title?: string, metadata?: any }> {
-    const data = JSON.parse(content);
+    const parsed = JSON.parse(content);
+
+// ChatGPT exports: either a single object or an array of conversations
+const data = Array.isArray(parsed)
+  ? parsed.find(
+      (c: any) =>
+        c &&
+        typeof c === 'object' &&
+        'mapping' in c &&
+        'title' in c
+    ) ?? parsed[0]
+  : parsed;
+
+// If we still don't have a usable object, fall back to the basic JSON parser
+if (!data || typeof data !== 'object') {
+  return this.parseBasicJson(content);
+}
     
     // Handle ChatGPT export format
     if (data.title && data.mapping) {
