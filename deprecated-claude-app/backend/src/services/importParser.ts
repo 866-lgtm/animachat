@@ -566,7 +566,7 @@ export class ImportParser {
     }
 
     const data = chatgptConversations
-      ? (chatgptConversations[0] ?? parsed[0])
+      ? chatgptConversations[0]
       : parsed;
 
     // If we still don't have a usable object, fall back to the basic JSON parser
