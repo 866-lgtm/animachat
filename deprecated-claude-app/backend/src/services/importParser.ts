@@ -550,13 +550,13 @@ export class ImportParser {
 
     // ChatGPT exports: either a single object or an array of conversations
     const chatgptConversations = Array.isArray(parsed)
-    ? parsed.filter((c: any) =>
-        c &&
-        typeof c === 'object' &&
-        'mapping' in c &&
-        'title' in c
-    )
-    : null;
+      ? parsed.filter((c: any) =>
+          c &&
+          typeof c === 'object' &&
+          'mapping' in c &&
+          'title' in c
+        )
+      : null;
 
     if (chatgptConversations && chatgptConversations.length > 1) {
       throw new Error(
