@@ -558,16 +558,16 @@ export class ImportParser {
     )
     : null;
 
-if (chatgptConversations && chatgptConversations.length > 1) {
-    throw new Error(
+    if (chatgptConversations && chatgptConversations.length > 1) {
+      throw new Error(
         `ChatGPT export contains ${chatgptConversations.length} conversations; ` +
         `this importer currently supports importing one conversation per file.`
-    );
-}
+      );
+    }
 
-const data = chatgptConversations
-    ? (chatgptConversations[0] ?? parsed[0])
-    : parsed;
+    const data = chatgptConversations
+      ? (chatgptConversations[0] ?? parsed[0])
+      : parsed;
 
     // If we still don't have a usable object, fall back to the basic JSON parser
     if (!data || typeof data !== 'object') {
